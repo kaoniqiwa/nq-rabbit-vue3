@@ -1,0 +1,7 @@
+// var.scss 不能通过在 main.ts 中导入生效，因为 sass 变量是中间变量，除非 var.scss 中内容是 css vars 变量，浏览器能正确识别
+
+$xtxColor: #27ba9b;
+$helpColor: #e26237;
+$sucColor: #1dc779;
+$warnColor: #ffb302;
+$priceColor: #cf4444;
