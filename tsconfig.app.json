@@ -1,16 +1,14 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "node.d.ts"],
+  "include": ["src/**/*", "src/**/*.vue", "types/**/*.d.ts", "vite/client"],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
     "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
     // 指定 ElementPlus 组件类型
-    "types": ["element-plus/global"]
+    "types": ["element-plus/global", "vite/client"]
   }
 }

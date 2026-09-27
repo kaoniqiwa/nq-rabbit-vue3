@@ -6,6 +6,8 @@ import { HotGoodType, type SkuView } from '@/types'
 import { ElMessage } from 'element-plus'
 import { useCartStore } from '@/stores'
 
+// 测试数据:/detail/0233468
+
 const { goodDetail } = useGoodDetail()
 const cartStore = useCartStore()
 
