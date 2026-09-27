@@ -15,10 +15,8 @@ interface RuleForm {
   checkPass: string
   agree: boolean
 }
-
 // 发起登录请求
 const { getUserInfo } = useUserStore()
-
 // 路由器对象
 const router = useRouter()
 

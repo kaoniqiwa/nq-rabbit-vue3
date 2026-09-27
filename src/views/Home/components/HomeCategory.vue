@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useCategoryStore } from '@/stores'
-import { storeToRefs } from 'pinia';
+import { storeToRefs } from 'pinia'
 const { categoryList } = storeToRefs(useCategoryStore())
 </script>
 
@@ -9,8 +9,12 @@ const { categoryList } = storeToRefs(useCategoryStore())
     <ul class="menu">
       <li v-for="item in categoryList" :key="item.id">
         <RouterLink :to="`/category/${item.id}`">{{ item.name }}</RouterLink>
-        <RouterLink v-for="child in item.children?.slice(0, 2)" :key="child.id" :to="`/category/sub/${child.id}`">{{
-          child.name }}</RouterLink>
+        <RouterLink
+          v-for="child in item.children?.slice(0, 2)"
+          :key="child.id"
+          :to="`/category/sub/${child.id}`"
+          >{{ child.name }}</RouterLink
+        >
         <div class="layer">
           <h4>分类推荐 <small>根据您的购买或浏览记录推荐</small></h4>
           <ul>
@@ -37,8 +41,6 @@ const { categoryList } = storeToRefs(useCategoryStore())
   width: 250px;
   height: 500px;
   background: rgba(0, 0, 0, 0.8);
-  position: relative;
-  z-index: 99;
 }
 
 .menu {
@@ -68,7 +70,6 @@ const { categoryList } = storeToRefs(useCategoryStore())
       top: 0;
       padding: 0 15px;
       display: none;
-
 
       h4 {
         font-size: 20px;

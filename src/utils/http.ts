@@ -10,7 +10,7 @@ import router from '@/router'
 
 const httpInstance = axios.create({
   // 基地址
-  baseURL: 'https://pcapi-xiaotuxian-front-devtest.itheima.net',
+  baseURL: import.meta.env.VITE_APP_BASE_API,
   // 超时时间
   timeout: 5000
 })

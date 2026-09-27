@@ -1,14 +1,12 @@
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 import Login from '@/views/Login/index.vue'
-import Layout from '@/views/Layout/index.vue'
+
+const Layout = () => import('@/views/Layout/index.vue')
 
 const router = createRouter({
-  // import.meta.env.BASE_URL 为 vite 提供的项目根路径
   history: createWebHistory(import.meta.env.BASE_URL),
 
-  // 如果服务器没有配置路由，则应该用 hash 模式
-  // history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
@@ -65,7 +63,10 @@ const router = createRouter({
   ],
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
-      return savedPosition
+      return {
+        ...savedPosition,
+        behavior: 'smooth'
+      }
     } else {
       return {
         top: 0,
