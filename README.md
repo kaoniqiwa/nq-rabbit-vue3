@@ -1,4 +1,4 @@
-# my-rabbit-vue3
+# nq-rabbit-vue3
 
 ## 导入 .vue 文件
 

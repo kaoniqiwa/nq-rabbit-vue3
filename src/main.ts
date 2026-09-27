@@ -10,6 +10,7 @@ import { useTitle } from '@vueuse/core'
 import App from './App.vue'
 import router from './router'
 
+import.meta.env.VITE_APP_TITLE
 const app = createApp(App)
 
 const pinia = createPinia()

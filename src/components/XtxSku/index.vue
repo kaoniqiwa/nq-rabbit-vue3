@@ -18,7 +18,58 @@ const spliter = '★'
 // sku 的字典对象
 let pathMap: PathMap = {}
 
-/**根据skus数据得到路径字典对象 */
+/**
+ * 根据skus数据得到路径字典对象
+ * 
+ * [
+      {
+    "id": "300456106",
+    "skuCode": "300456106",
+    "price": "109.00",
+    "oldPrice": "129.00",
+    "inventory": 4925,
+    "picture": "https://yanxuan-item.nosdn.127.net/1b103eced5c3c6503fcf3e34bd384b97.png",
+    "specs": [
+        {
+            "name": "颜色",
+            "valueName": "粉黑色(LXJ017)"
+        },
+        {
+            "name": "尺码",
+            "valueName": "26"
+        }
+      ]
+    },
+    {
+        "id": "300456107",
+        "skuCode": "300456107",
+        "price": "109.00",
+        "oldPrice": "129.00",
+        "inventory": 9122,
+        "picture": "https://yanxuan-item.nosdn.127.net/1b103eced5c3c6503fcf3e34bd384b97.png",
+        "specs": [
+            {
+                "name": "颜色",
+                "valueName": "粉黑色(LXJ017)"
+            },
+            {
+                "name": "尺码",
+                "valueName": "27"
+            }
+        ]
+    }
+ * ]
+
+ ===>
+ {
+    "粉黑色(LXJ017)":['300456106','300456107'],
+    26:['300456106'],
+    '粉黑色(LXJ017)*26':['300456106'],
+    27:['300456107'],
+    '粉黑色(LXJ017)*27':['300456107']
+ }
+ * 
+ */
 const getPathMap = (skus: Skus[]) => {
   const pathMap: PathMap = {}
   skus.forEach((sku) => {
@@ -50,7 +101,7 @@ const initDisabledStatus = (specs: ResultSpecView[], pathMap: PathMap) => {
     })
   })
 }
-/**获取每种规格的选中项 */
+/**获取每种规格的选中项 ['a','b',undefined,undefined]*/
 const getSelectedArr = (specs: ResultSpecView[]) => {
   const selectedArr = specs.map((spec) => {
     return spec.values.find((val) => val.selected)?.name
@@ -114,7 +165,7 @@ watchEffect(() => {
     <dl v-for="spec in goodDetail?.specs" :key="spec.id">
       <dt>{{ spec.name }}</dt>
       <dd>
-        <template v-for="(item, index) in spec.values" :key="item.name">
+        <template v-for="item in spec.values" :key="item.name">
           <img
             v-if="item.picture"
             :src="item.picture"
