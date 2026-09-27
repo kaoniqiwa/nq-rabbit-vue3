@@ -1,7 +1,5 @@
-/// <reference types="./node.d.ts" />
-
 import { fileURLToPath, URL } from 'node:url'
-
+import path from 'node:path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
@@ -10,6 +8,14 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { version } from './package.json'
+
+function getDirname() {
+  if (import.meta.dirname) {
+    return import.meta.dirname
+  }
+  const __filename = fileURLToPath(import.meta.url)
+  return path.dirname(__filename)
+}
 
 export default defineConfig({
   // 项目根目录，index.html 文件位于此
@@ -56,11 +62,21 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         // 自动导入定制化样式文件进行样式覆盖
-        additionalData: `
-          @use "@/styles/element/index.scss" ;
-          @use "@/styles/element/dark.scss";
-          @use "@/styles/var.scss" as *; 
-        `
+        // 注意：这里不能跳过 node_modules —— Element Plus 的样式源码就在
+        // node_modules/element-plus/theme-chalk/src/ 下，additionalData 必须注入到它们
+        // 才能让下面的 @forward 配置生效，否则主题色永远是默认值
+        additionalData(source: string, filePath: string) {
+          if (filePath.includes('node_modules') && !filePath.includes('element-plus')) {
+            return source
+          }
+          const base = path.resolve(getDirname(), 'src/styles').replace(/\\/g, '/')
+          return [
+            `@use "${path.join(base, 'element/index.scss')}";`,
+            `@use "${path.join(base, 'element/dark.scss')}";`,
+            `@use "${path.join(base, 'var.scss')}" as *;`,
+            source
+          ].join('\n')
+        }
       }
     }
   }
