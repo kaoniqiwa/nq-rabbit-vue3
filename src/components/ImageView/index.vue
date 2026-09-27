@@ -1,25 +1,24 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue'
 import { useMouseInElement, useElementSize } from '@vueuse/core'
 
+withDefaults(
+  defineProps<{
+    imageList: string[]
+  }>(),
+  {
+    imageList: () => []
+  }
+)
 
-withDefaults(defineProps<{
-  imageList: string[]
-}>(), {
-  imageList: () => []
-})
 const activeIndex = ref(0)
 const enterhandler = (index: number) => {
-  activeIndex.value = index;
+  activeIndex.value = index
 }
-
 const middleRef = ref(null)
-const layerRef = ref<HTMLDivElement>()
 const { width: middleWidth, height: middleHeight } = useElementSize(middleRef)
 const layerWidth = ref(0)
 const layerHeight = ref(0)
-
-
 
 // layerRef 初始时为隐藏状态，宽高为0
 onMounted(() => {
@@ -28,9 +27,8 @@ onMounted(() => {
   layerHeight.value = +styleDeclaration.height.replace('px', '')
 })
 
-
 // 滑块位置
-const left = ref(0);
+const left = ref(0)
 const top = ref(0)
 
 // 背景图偏移量
@@ -38,12 +36,10 @@ const positionX = ref(0)
 const positionY = ref(0)
 
 // 滑块偏移量范围
-const offsetXMin = computed(() => 0);
+const offsetXMin = computed(() => 0)
 const offsetXMax = computed(() => middleWidth.value - layerWidth.value)
-const offsetYMin = computed(() => 0);
+const offsetYMin = computed(() => 0)
 const offsetYMax = computed(() => middleHeight.value - layerHeight.value)
-
-
 
 // 鼠标在容器中的位置
 const { elementX, elementY, isOutside } = useMouseInElement(middleRef)
@@ -52,24 +48,26 @@ const { elementX, elementY, isOutside } = useMouseInElement(middleRef)
 const layerVisibility = ref(false)
 
 watch([elementX, elementY, isOutside, layerVisibility], () => {
-
   if (isOutside.value) {
     layerVisibility.value = !isOutside.value
     return
   }
-  left.value = Math.min(Math.max(offsetXMin.value, elementX.value - layerWidth.value / 2), offsetXMax.value)
-  top.value = Math.min(Math.max(offsetYMin.value, elementY.value - layerHeight.value / 2), offsetYMax.value)
-
+  left.value = Math.min(
+    Math.max(offsetXMin.value, elementX.value - layerWidth.value / 2),
+    offsetXMax.value
+  )
+  top.value = Math.min(
+    Math.max(offsetYMin.value, elementY.value - layerHeight.value / 2),
+    offsetYMax.value
+  )
 
   // 计算出 layer 移动百分比，通过百分比设置背景图片位置，避免根据容器像素和图片原始像素的硬性换算
-  positionX.value = left.value / (offsetXMax.value - offsetXMin.value) * 100
-  positionY.value = top.value / (offsetYMax.value - offsetYMin.value) * 100
+  positionX.value = (left.value / (offsetXMax.value - offsetXMin.value)) * 100
+  positionY.value = (top.value / (offsetYMax.value - offsetYMin.value)) * 100
 
   // 先设置 layer 的位置，再显示 layer,否则第一次显示时会有闪动的副作用，且无法通过 nextTick 控制
   layerVisibility.value = !isOutside.value
-
 })
-
 </script>
 <template>
   <div class="goods-image">
@@ -77,22 +75,36 @@ watch([elementX, elementY, isOutside, layerVisibility], () => {
     <div class="middle" ref="middleRef">
       <img :src="imageList[activeIndex]" alt="" />
 
-      <div class="layer" :style="{ left: `${left}px`, top: `${top}px` }" v-show="layerVisibility" ref="layerRef"></div>
+      <div
+        class="layer"
+        :style="{ left: `${left}px`, top: `${top}px` }"
+        v-show="layerVisibility"
+        ref="layerRef"
+      ></div>
     </div>
     <!-- 小图列表 -->
     <ul class="small">
-      <li v-for="(img, i) in imageList" :key="i" :class="{ active: i === activeIndex }" @mouseenter="enterhandler(i)">
+      <li
+        v-for="(img, i) in imageList"
+        :key="img"
+        :class="{ active: i === activeIndex }"
+        @mouseenter="enterhandler(i)"
+      >
         <img :src="img" alt="" />
       </li>
     </ul>
     <!-- 放大镜大图 -->
-    <div class="large" :style="[
-      {
-        backgroundImage: `url(${imageList[activeIndex]})`,
-        backgroundPositionX: `${positionX}%`,
-        backgroundPositionY: `${positionY}%`,
-      },
-    ]" v-show="layerVisibility"></div>
+    <div
+      class="large"
+      :style="[
+        {
+          backgroundImage: `url(${imageList[activeIndex]})`,
+          backgroundPositionX: `${positionX}%`,
+          backgroundPositionY: `${positionY}%`
+        }
+      ]"
+      v-show="layerVisibility"
+    ></div>
   </div>
 </template>
 <style scoped lang="scss">
