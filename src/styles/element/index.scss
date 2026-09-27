@@ -22,3 +22,8 @@
     )
   )
 );
+@forward 'element-plus/theme-chalk/src/dark/var.scss' as dark-* with (
+  $bg-color: (
+    '': #4b2c98
+  )
+);

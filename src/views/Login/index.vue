@@ -5,7 +5,7 @@ import 'element-plus/theme-chalk/el-message.css'
 
 import type { FormInstance, FormRules, FormProps, ComponentSize } from 'element-plus'
 import { reactive, ref } from 'vue'
-import { useRouter, useRoute, } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import type { LocationQueryValue } from 'vue-router'
 import { useUserStore } from '@/stores'
 
@@ -23,7 +23,7 @@ const { getUserInfo } = useUserStore()
 const router = useRouter()
 
 // 当前路由记录
-const route = useRoute();
+const route = useRoute()
 
 /**标签对齐方式 */
 const labelPosition = ref<FormProps['labelPosition']>('right')
@@ -108,11 +108,13 @@ const submitForm = (formEl: FormInstance | undefined) => {
         account: ruleForm.account,
         password: ruleForm.password
       })
-      ElMessage.success('登录成功!');
+      ElMessage.success('登录成功!')
 
       // 对登录授权没有严格要求，没有登录仍可以访问商城，不需要在路由守卫中设置
       if (isLocationQueryValue(route.query.redirectUrl)) {
-        route.query.redirectUrl ? router.replace(decodeURIComponent(route.query.redirectUrl)) : router.replace({ path: '/' })
+        route.query.redirectUrl
+          ? router.replace(decodeURIComponent(route.query.redirectUrl))
+          : router.replace({ path: '/' })
       }
     } else {
       console.log('error submit!', fields)
@@ -125,7 +127,9 @@ const resetForm = (formEl: FormInstance | undefined) => {
   formEl.resetFields()
 }
 
-function isLocationQueryValue(val: LocationQueryValue | LocationQueryValue[]): val is LocationQueryValue {
+function isLocationQueryValue(
+  val: LocationQueryValue | LocationQueryValue[]
+): val is LocationQueryValue {
   return !Array.isArray(val)
 }
 </script>
@@ -150,8 +154,16 @@ function isLocationQueryValue(val: LocationQueryValue | LocationQueryValue[]): v
         </nav>
         <div class="account-box">
           <div class="form">
-            <el-form ref="ruleFormRef" :inline="false" :model="ruleForm" :rules="rules" :label-position="labelPosition"
-              label-width="100px" :size="formSize" status-icon>
+            <el-form
+              ref="ruleFormRef"
+              :inline="false"
+              :model="ruleForm"
+              :rules="rules"
+              :label-position="labelPosition"
+              label-width="100px"
+              :size="formSize"
+              status-icon
+            >
               <el-form-item prop="account" label="账户">
                 <el-input v-model="ruleForm.account" />
               </el-form-item>
@@ -167,8 +179,12 @@ function isLocationQueryValue(val: LocationQueryValue | LocationQueryValue[]): v
                 </el-checkbox>
               </el-form-item>
               <el-form-item>
-                <el-button size="large" class="subBtn" @click="submitForm(ruleFormRef)">点击登录</el-button>
-                <el-button size="large" class="subBtn" @click="resetForm(ruleFormRef)">重置</el-button>
+                <el-button size="large" type="primary" @click="submitForm(ruleFormRef)"
+                  >点击登录</el-button
+                >
+                <el-button size="large" type="primary" @click="resetForm(ruleFormRef)"
+                  >重置</el-button
+                >
               </el-form-item>
             </el-form>
           </div>
@@ -289,7 +305,7 @@ function isLocationQueryValue(val: LocationQueryValue | LocationQueryValue[]): v
       color: #999;
       display: inline-block;
 
-      +a {
+      + a {
         border-left: 1px solid #ccc;
       }
     }
