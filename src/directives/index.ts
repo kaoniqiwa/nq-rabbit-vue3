@@ -1,10 +1,9 @@
-import type { App } from 'vue'
+import type { App, DirectiveBinding } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
-
 export const lazyLoadPlugin = {
   install(app: App<Element>) {
     app.directive<HTMLImageElement, string>('img-lazy', {
-      mounted(el, binding, vnode) {
+      mounted(el: HTMLImageElement, binding: DirectiveBinding<string>) {
         const { stop } = useIntersectionObserver(el, ([{ isIntersecting }]) => {
           if (isIntersecting) {
             el.setAttribute('src', binding.value)

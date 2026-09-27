@@ -1,6 +1,6 @@
 import { getGoodDetailAPI } from '@/apis/good'
 import type { GoodDetailDTO } from '@/types'
-import { ref, watchEffect, type Ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 
 export function useGoodDetail() {

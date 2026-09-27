@@ -1,14 +1,14 @@
 <script setup lang="ts">
-
-
-const defaultProps = withDefaults(defineProps<{
-  title?: string,
-  subTitle?: string
-}>(), {
-  title: '',
-  subTitle: ''
-})
-
+withDefaults(
+  defineProps<{
+    title?: string
+    subTitle?: string
+  }>(),
+  {
+    title: '',
+    subTitle: ''
+  }
+)
 </script>
 <template>
   <div class="home-panel">

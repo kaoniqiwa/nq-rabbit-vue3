@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { getCheckoutInfoAPI, } from '@/apis/checkout'
+import { onMounted, ref } from 'vue'
+import { getCheckoutInfoAPI } from '@/apis/checkout'
 import { createOrderAPI } from '@/apis/order'
-import type { CheckoutDTO } from "@/types";
-import { useRouter } from "vue-router";
+import type { CheckoutDTO } from '@/types'
+import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores'
 
 const { getCartList } = useCartStore()
 
-
-const router = useRouter();
+const router = useRouter()
 
 const addDialogVisible = ref(false)
-const switchDialogVisible = ref(false)
 // 订单对象
 const checkoutInfo = ref<CheckoutDTO>()
 
@@ -20,15 +18,17 @@ const checkoutInfo = ref<CheckoutDTO>()
 const curAddress = ref<CheckoutDTO['userAddresses'][number]>()
 
 const getCheckInfo = async () => {
-  const { data: { result } } = await getCheckoutInfoAPI()
+  const {
+    data: { result }
+  } = await getCheckoutInfoAPI()
   checkoutInfo.value = result
 
-  const curAddr = result.userAddresses.find(addr => addr.isDefault === 0)
+  const curAddr = result.userAddresses.find((addr) => addr.isDefault === 0)
   if (curAddr) {
     curAddress.value = curAddr
   }
 
-  console.log(result);
+  console.log(result)
 }
 onMounted(() => {
   getCheckInfo()
@@ -39,12 +39,13 @@ const submitOrder = async () => {
     addressId: curAddress.value?.id ?? '',
     buyerMessage: '',
     deliveryTimeType: 1,
-    goods: checkoutInfo.value?.goods.map(item => {
-      return {
-        skuId: item.skuId,
-        count: item.count
-      }
-    }) ?? [],
+    goods:
+      checkoutInfo.value?.goods.map((item) => {
+        return {
+          skuId: item.skuId,
+          count: item.count
+        }
+      }) ?? [],
     payChannel: 1,
     payType: 1
   })
@@ -52,11 +53,11 @@ const submitOrder = async () => {
   // 更新购物车,提出下单的物品
   getCartList()
   router.push({
-    name: 'pay', query: {
+    name: 'pay',
+    query: {
       id: orderId
     }
   })
-
 }
 </script>
 <template>
@@ -69,9 +70,13 @@ const submitOrder = async () => {
             <div class="text">
               <!-- <div class="none">您需要先添加收货地址才可提交订单。</div> -->
               <ul>
-                <li><span>收<i />货<i />人：</span>{{ curAddress?.receiver }}</li>
+                <li>
+                  <span>收<i />货<i />人：</span>{{ curAddress?.receiver }}
+                </li>
                 <li><span>联系方式：</span>{{ curAddress?.contact }}</li>
-                <li><span>收货地址：</span>{{ curAddress?.fullLocation }} {{ curAddress?.address }}</li>
+                <li>
+                  <span>收货地址：</span>{{ curAddress?.fullLocation }} {{ curAddress?.address }}
+                </li>
               </ul>
             </div>
             <div class="action">
@@ -97,7 +102,7 @@ const submitOrder = async () => {
               <tr v-for="item in checkoutInfo?.goods" :key="item.id">
                 <td>
                   <a href="javascript:;" class="info">
-                    <img :src="item.picture" alt="">
+                    <img :src="item.picture" alt="" />
                     <div class="right">
                       <p>{{ item.name }}</p>
                       <p>{{ item.attrsText }}</p>
@@ -124,7 +129,7 @@ const submitOrder = async () => {
         <div class="box-body">
           <a class="my-btn active" href="javascript:;">在线支付</a>
           <a class="my-btn" href="javascript:;">货到付款</a>
-          <span style="color:#999">货到付款需付5元手续费</span>
+          <span style="color: #999">货到付款需付5元手续费</span>
         </div>
         <h3 class="box-title">金额明细</h3>
         <!-- 金额明细 -->
@@ -196,7 +201,7 @@ const submitOrder = async () => {
       width: 100%;
     }
 
-    >ul {
+    > ul {
       flex: 1;
       padding: 20px;
 
@@ -207,7 +212,7 @@ const submitOrder = async () => {
           color: #999;
           margin-right: 5px;
 
-          >i {
+          > i {
             width: 0.5em;
             display: inline-block;
           }
@@ -215,7 +220,7 @@ const submitOrder = async () => {
       }
     }
 
-    >a {
+    > a {
       color: $xtxColor;
       width: 160px;
       text-align: center;
@@ -289,7 +294,6 @@ const submitOrder = async () => {
       }
     }
   }
-
 }
 
 .my-btn {

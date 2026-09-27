@@ -1,9 +1,12 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
-  show: boolean
-}>(), {
-  show: false
-})
+withDefaults(
+  defineProps<{
+    show: boolean
+  }>(),
+  {
+    show: false
+  }
+)
 </script>
 <template>
   <el-dialog v-model="show" title="添加收货地址">

@@ -1,20 +1,22 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref } from 'vue'
 import DetailHot from './components/DetailHot.vue'
 import { useGoodDetail } from './composables/useGoodDetail'
-import { HotGoodType, type SkuView, } from '@/types';
-import { ElMessage } from 'element-plus';
+import { HotGoodType, type SkuView } from '@/types'
+import { ElMessage } from 'element-plus'
 import { useCartStore } from '@/stores'
 
 const { goodDetail } = useGoodDetail()
 const cartStore = useCartStore()
 
+const categories = computed(() => {
+  return goodDetail.value?.categories?.slice()?.reverse() ?? []
+})
 const count = ref(1)
 const skuObj = ref<SkuView>({})
 const skuChange = (payload: SkuView) => {
   skuObj.value = payload
   count.value = 1
-
 }
 const addCart = () => {
   if (skuObj.value.id && goodDetail.value) {
@@ -29,7 +31,6 @@ const addCart = () => {
       attrsText: skuObj.value.specsText,
       selected: true
     })
-
   } else {
     ElMessage.warning('请选择规格')
   }
@@ -41,10 +42,12 @@ const addCart = () => {
       <div class="bread-container">
         <el-breadcrumb separator=">">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item v-for="item in goodDetail?.categories.slice().reverse()"
-            :to="{ path: `/category/sub/${item.id}` }">{{ item.name
-            }}</el-breadcrumb-item>
-
+          <el-breadcrumb-item
+            v-for="item in categories"
+            :key="item.id"
+            :to="{ path: `/category/sub/${item.id}` }"
+            >{{ item.name }}</el-breadcrumb-item
+          >
         </el-breadcrumb>
       </div>
       <div class="info-container">
@@ -57,7 +60,7 @@ const addCart = () => {
               <ul class="goods-sales">
                 <li>
                   <p>销量人气</p>
-                  <p> {{ goodDetail?.salesCount }}+ </p>
+                  <p>{{ goodDetail?.salesCount }}+</p>
                   <p><i class="iconfont icon-task-filling"></i>销量人气</p>
                 </li>
                 <li>
@@ -72,18 +75,20 @@ const addCart = () => {
                 </li>
                 <li>
                   <p>品牌信息</p>
-                  <p style="min-height: 19px;">{{ goodDetail?.brand?.name ?? ' ' }}</p>
+                  <p style="min-height: 19px">{{ goodDetail?.brand?.name ?? ' ' }}</p>
                   <p><i class="iconfont icon-dynamic-filling"></i>品牌主页</p>
                 </li>
               </ul>
             </div>
             <div class="spec">
               <!-- 商品信息区 -->
-              <p class="g-name"> {{ goodDetail?.name }} </p>
-              <p class="g-desc">{{ goodDetail?.desc }} </p>
+              <p class="g-name">{{ goodDetail?.name }}</p>
+              <p class="g-desc">{{ goodDetail?.desc }}</p>
               <p class="g-price">
                 <span entity="&yen;">{{ skuObj.price ? skuObj.price : goodDetail?.price }}</span>
-                <span entity="&#x00A5;"> {{ skuObj.oldPrice ? skuObj.oldPrice : goodDetail?.oldPrice }}</span>
+                <span entity="&#x00A5;">
+                  {{ skuObj.oldPrice ? skuObj.oldPrice : goodDetail?.oldPrice }}</span
+                >
               </p>
               <div class="g-service">
                 <dl>
@@ -103,12 +108,15 @@ const addCart = () => {
               <!-- sku组件 -->
               <Sku :goodDetail="goodDetail" @change="skuChange"></Sku>
               <!-- 数据组件 -->
-              <el-input-number v-model="count" :disabled="!skuObj.inventory" :min="1" :max="skuObj.inventory" />
+              <el-input-number
+                v-model="count"
+                :disabled="!skuObj.inventory"
+                :min="1"
+                :max="skuObj.inventory"
+              />
               <!-- 按钮组件 -->
               <div>
-                <el-button size="large" class="btn" @click="addCart">
-                  加入购物车
-                </el-button>
+                <el-button size="large" class="btn" @click="addCart"> 加入购物车 </el-button>
               </div>
             </div>
           </div>
@@ -128,7 +136,12 @@ const addCart = () => {
                     </li>
                   </ul>
                   <!-- 图片 -->
-                  <img v-for="picture in goodDetail?.details.pictures" :key="picture" :src="picture" alt="">
+                  <img
+                    v-for="picture in goodDetail?.details.pictures"
+                    :key="picture"
+                    :src="picture"
+                    alt=""
+                  />
                 </div>
               </div>
             </div>
@@ -149,7 +162,6 @@ const addCart = () => {
 </template>
 <style scoped lang="scss">
 .xtx-goods-page {
-
   .bread-container {
     padding: 25px 0;
   }
@@ -175,13 +187,13 @@ const addCart = () => {
             flex: 1;
             position: relative;
 
-            +li::after {
+            + li::after {
               position: absolute;
               top: 10px;
               left: 0;
               height: 60px;
               border-left: 1px solid #e4e4e4;
-              content: "";
+              content: '';
             }
 
             p {
@@ -232,7 +244,7 @@ const addCart = () => {
 
           span {
             &::before {
-              // content: '\00A5'; 
+              // content: '\00A5';
               content: attr(entity);
               font-size: 14px;
             }
@@ -275,7 +287,7 @@ const addCart = () => {
                   margin-right: 10px;
 
                   &::before {
-                    content: "•";
+                    content: '•';
                     color: $xtxColor;
                     margin-right: 2px;
                   }
@@ -291,7 +303,6 @@ const addCart = () => {
 
         .btn {
           margin-top: 20px;
-
         }
       }
     }
@@ -318,8 +329,6 @@ const addCart = () => {
               padding: 0 40px;
               font-size: 18px;
               position: relative;
-
-
             }
           }
 
