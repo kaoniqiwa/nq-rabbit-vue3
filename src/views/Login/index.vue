@@ -32,60 +32,47 @@ const formSize = ref<ComponentSize>('default')
 /**表单组件引用 */
 const ruleFormRef = ref<FormInstance>()
 
-/**表单域 */
+/**表单域
+ * xiaotuxian001
+ * 123456
+ */
 const ruleForm = reactive<RuleForm>({
   account: 'xiaotuxian001',
-  password: '123456',
-  checkPass: '123456',
+  password: '',
+  checkPass: '',
   agree: true
 })
+
+// 密码校验：只校验自身
+const validatePassword = (rule: any, value: string, callback: any) => {
+  if (!value) {
+    return callback(new Error('密码不能为空'))
+  }
+  if (value.length < 6 || value.length > 14) {
+    return callback(new Error('密码长度为6-14个字符'))
+  }
+  callback()
+}
+
+// 确认密码校验：与密码联动
+const validateCheckPass = (rule: any, value: string, callback: any) => {
+  if (!value) {
+    return callback(new Error('密码不能为空'))
+  }
+  if (value.length < 6 || value.length > 14) {
+    return callback(new Error('密码长度为6-14个字符'))
+  }
+  if (value !== ruleForm.password) {
+    return callback(new Error('两次密码不一致'))
+  }
+  callback()
+}
 
 /**表单校验规则 */
 const rules = ref<FormRules<RuleForm>>({
   account: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
-  password: [
-    { required: true, message: '密码不能为空', trigger: 'blur' },
-    {
-      validator(rule: any, value: any, callback: any) {
-        if (value == '') {
-          callback(new Error('密码不能为空'))
-        } else if (value.length < 6 || value.length > 14) {
-          callback(new Error('密码长度为6-14个字符'))
-        } else {
-          if (ruleForm.checkPass !== '') {
-            if (!ruleFormRef.value) return
-            ruleFormRef.value.validateField('checkPass', (isValid: boolean) => {
-              if (isValid) {
-                callback()
-              } else {
-                callback(new Error('两次密码不一致'))
-              }
-            })
-
-            return
-          } else {
-            callback()
-          }
-        }
-      }
-    }
-  ],
-  checkPass: [
-    { required: true, message: '密码不能为空', trigger: 'blur' },
-    {
-      validator(rule: any, value: any, callback: any) {
-        if (value == '') {
-          callback(new Error('密码不能为空'))
-        } else if (value.length < 6 || value.length > 14) {
-          callback(new Error('密码长度为6-14个字符'))
-        } else if (ruleForm.password !== '' && value !== ruleForm.password) {
-          callback(new Error('两次密码不一致'))
-        } else {
-          callback()
-        }
-      }
-    }
-  ],
+  password: [{ required: true, validator: validatePassword, trigger: 'blur' }, {}],
+  checkPass: [{ required: true, validator: validateCheckPass, trigger: 'blur' }, {}],
   agree: [
     {
       validator(rule: any, value: any, callback: any) {
@@ -166,10 +153,10 @@ function isLocationQueryValue(
                 <el-input v-model="ruleForm.account" />
               </el-form-item>
               <el-form-item prop="password" label="密码">
-                <el-input v-model="ruleForm.password" />
+                <el-input v-model="ruleForm.password" type="password" show-password clearable />
               </el-form-item>
               <el-form-item prop="checkPass" label="确认密码">
-                <el-input v-model="ruleForm.checkPass" />
+                <el-input v-model="ruleForm.checkPass" type="password" show-password clearable />
               </el-form-item>
               <el-form-item prop="agree" label-width="22px">
                 <el-checkbox size="large" v-model="ruleForm.agree">
