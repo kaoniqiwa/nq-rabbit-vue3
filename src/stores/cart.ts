@@ -103,7 +103,7 @@ export const useCartStore = defineStore(
           ElMessage.success('删除成功')
         }
       } else {
-        let index = cartList.value.findIndex((v) => v.skuId && v.skuId === skuId)
+        const index = cartList.value.findIndex((v) => v.skuId && v.skuId === skuId)
         if (index != -1) {
           cartList.value.splice(index, 1)
           ElMessage.success('删除成功')

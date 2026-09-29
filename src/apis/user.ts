@@ -6,3 +6,9 @@ import httpInstance from '@/utils/http'
 export function loginAPI(data: UserParams) {
   return httpInstance.post<IReponse<UserDTO>>('/login', data)
 }
+
+export function getLikeListAPI(params: any) {
+  return httpInstance.get<IReponse<any>>('/goods/relevant', {
+    params: params
+  })
+}

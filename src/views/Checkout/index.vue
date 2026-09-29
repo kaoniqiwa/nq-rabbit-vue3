@@ -2,20 +2,22 @@
 import { onMounted, ref } from 'vue'
 import { getCheckoutInfoAPI } from '@/apis/checkout'
 import { createOrderAPI } from '@/apis/order'
-import type { CheckoutDTO } from '@/types'
+import type { CheckoutDTO, UserAddress } from '@/types'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores'
 
 const { getCartList } = useCartStore()
 
 const router = useRouter()
-
 const addDialogVisible = ref(false)
+const showDialog = ref(false)
+const activeAddress = ref<UserAddress>()
+
 // 订单对象
 const checkoutInfo = ref<CheckoutDTO>()
 
 // 默认收货地址
-const curAddress = ref<CheckoutDTO['userAddresses'][number]>()
+const curAddress = ref<UserAddress>()
 
 const getCheckInfo = async () => {
   const {
@@ -27,8 +29,22 @@ const getCheckInfo = async () => {
   if (curAddr) {
     curAddress.value = curAddr
   }
-
-  console.log(result)
+}
+const switchAddress = (address: UserAddress) => {
+  activeAddress.value = address
+}
+const openSwitchDialog = () => {
+  activeAddress.value = curAddress.value
+  showDialog.value = true
+}
+const closeSwitchDiglog = () => {
+  showDialog.value = false
+  activeAddress.value = undefined
+}
+const confirmSwitchDiglog = () => {
+  curAddress.value = activeAddress.value
+  showDialog.value = false
+  activeAddress.value = undefined
 }
 onMounted(() => {
   getCheckInfo()
@@ -80,7 +96,7 @@ const submitOrder = async () => {
               </ul>
             </div>
             <div class="action">
-              <el-button size="large">切换地址</el-button>
+              <el-button size="large" @click="openSwitchDialog">切换地址</el-button>
               <el-button size="large" @click="addDialogVisible = true">添加地址</el-button>
             </div>
           </div>
@@ -160,6 +176,32 @@ const submitOrder = async () => {
       </div>
     </div>
   </div>
+  <!-- 切换地址 -->
+  <el-dialog v-model="showDialog" title="切换收货地址" width="30%" center>
+    <div class="addressWrapper">
+      <div
+        class="text item"
+        :class="{ active: activeAddress?.id === item.id }"
+        v-for="item in checkoutInfo?.userAddresses"
+        :key="item.id"
+        @click="switchAddress(item)"
+      >
+        <ul>
+          <li>
+            <span>收<i />货<i />人：</span>{{ item.receiver }}
+          </li>
+          <li><span>联系方式：</span>{{ item.contact }}</li>
+          <li><span>收货地址：</span>{{ item.fullLocation + item.address }}</li>
+        </ul>
+      </div>
+    </div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="closeSwitchDiglog">取消</el-button>
+        <el-button type="primary" @click="confirmSwitchDiglog">确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 <style scoped lang="scss">
 .xtx-pay-checkout-page {
@@ -342,5 +384,35 @@ const submitOrder = async () => {
   text-align: right;
   padding: 60px;
   border-top: 1px solid #f5f5f5;
+}
+
+.addressWrapper {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.text {
+  flex: 1;
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+
+  &.item {
+    border: 1px solid #f5f5f5;
+    margin-bottom: 10px;
+    cursor: pointer;
+
+    &.active,
+    &:hover {
+      border-color: $xtxColor;
+      background: lighten($xtxColor, 50%);
+    }
+
+    > ul {
+      padding: 10px;
+      font-size: 14px;
+      line-height: 30px;
+    }
+  }
 }
 </style>

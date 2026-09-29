@@ -11,3 +11,9 @@ export function createOrderAPI(data: CreateOrderParams) {
 export function getOrderAPI(orderId: string) {
   return httpInstance.get<IReponse<OrderDetailDTO>>(`/member/order/${orderId}`)
 }
+
+export function getUserOrderAPI(params: any) {
+  return httpInstance.get<IReponse<OrderDetailDTO>>(`/member/order`, {
+    params
+  })
+}
